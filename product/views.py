@@ -2,7 +2,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from product.models import Category, Product, Review
-from product.serializers import CategorySerializer, ProductSerializer, ReviewSerializer
+from product.serializers import CategorySerializer, ProductSerializer, \
+    ReviewSerializer, ProductsReviewsSerializer
 
 
 @api_view(['GET'])
@@ -56,6 +57,13 @@ def review_detail_api_view(request, id):
                         data="ERROR! Такой страницы не существует")
     serializer = ReviewSerializer(review)
     return Response(data=serializer.data)
+
+@api_view(['GET'])
+def products_reviews_api_view(request):
+    products = Product.objects.all()
+    serializer = ProductsReviewsSerializer(products, many=True)
+    return Response(data=serializer.data)
+
 
 
 
