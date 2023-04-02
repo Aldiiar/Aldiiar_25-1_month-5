@@ -32,6 +32,7 @@ def category_detail_api_view(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     elif request.method == 'PUT':
         category.name = request.data.get('name')
+        category.save()
         return Response(data=CategorySerializer(category).data)
 
 
@@ -70,6 +71,7 @@ def product_detail_api_view(request, id):
         product.description = request.data.get('description')
         product.price = request.data.get('price')
         product.category_id = request.data.get('category_id')
+        product.save()
         return Response(data=ProductSerializer(product).data)
 
 
@@ -104,6 +106,7 @@ def review_detail_api_view(request, id):
         review.text = request.data.get('text')
         review.stars = request.data.get('stars')
         review.product_id = request.data.get('product_id')
+        review.save()
         return Response(data=ReviewSerializer(review).data)
 
 
