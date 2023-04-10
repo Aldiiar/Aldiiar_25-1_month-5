@@ -48,6 +48,7 @@ def category_detail_api_view(request, id):
 
 @api_view(['GET', 'POST'])
 def products_api_view(request):
+    print(request.user)
     if request.method == 'GET':
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
