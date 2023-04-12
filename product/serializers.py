@@ -3,25 +3,6 @@ from product.models import Category, Product, Review
 from rest_framework.exceptions import ValidationError
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = '__all__'
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    product_count = ProductSerializer
-    class Meta:
-        model = Category
-        fields = 'name product_count'.split()
-
-
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = '__all__'
-
-
 class ReviewsStarsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
@@ -35,7 +16,7 @@ class ProductsReviewsSerializer(serializers.ModelSerializer):
         fields = 'title reviews rating'.split()
 
 
-class ProductValidateSerializer(serializers.Serializer):
+class ProductValidateSerializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=150)
     description = serializers.CharField(required=False, default="No description")
     price = serializers.FloatField()
@@ -48,12 +29,21 @@ class ProductValidateSerializer(serializers.Serializer):
             raise ValidationError('Category not found!')
         return category_id
 
+    class Meta:
+        model = Product
+        fields = 'id title description price category_id'.split()
 
-class CategoryValidateSerializer(serializers.Serializer):
+
+class CategoryValidateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=150, min_length=3)
+    product_count = ProductValidateSerializer
+
+    class Meta:
+        model = Category
+        fields = 'id name product_count'.split()
 
 
-class ReviewValidateSerializer(serializers.Serializer):
+class ReviewValidateSerializer(serializers.ModelSerializer):
     text = serializers.CharField(max_length=500)
     stars = serializers.IntegerField(required=False, min_value=1, max_value=5)
     product_id = serializers.IntegerField()
@@ -64,3 +54,7 @@ class ReviewValidateSerializer(serializers.Serializer):
         except Product.DoesNotExist:
             raise ValidationError('Product not found!')
         return product_id
+
+    class Meta:
+        model = Review
+        fields = '__all__'

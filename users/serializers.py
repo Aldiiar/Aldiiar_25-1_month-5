@@ -34,3 +34,4 @@ class ConfirmUserSerializer(serializers.Serializer):
         except ConfirmUser.DoesNotExist:
             return user_id
         raise ValidationError("User_id does not exists!")
+
